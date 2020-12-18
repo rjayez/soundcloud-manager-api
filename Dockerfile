@@ -22,9 +22,6 @@ WORKDIR /src
 ENTRYPOINT python3
 CMD ["SoundcloudController.py"]
 
-WORKDIR /client
-ENTRYPOINT npm
-CMD ["start"]
 
 
 
