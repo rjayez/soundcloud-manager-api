@@ -1,1 +1,1 @@
-web: gunicorn app:SoundcloudController
+web: gunicorn SoundcloudController:SoundcloudController
