@@ -7,14 +7,33 @@ client_secret = os.environ['SOUNDCLOUD_CLIENT_SECRET']
 username = os.environ['SOUNDCLOUD_USERNAME']
 password = os.environ['SOUNDCLOUD_PASSWORD']
 
-client = soundcloud.Client(client_id=client_id,
-                           client_secret=client_secret,
-                           username=username,
-                           password=password)
+client = None
+
+
+# client = soundcloud.Client(client_id=client_id,
+#                            client_secret=client_secret,
+#                            username=username,
+#                            password=password)
+
+
+def get_client():
+    if client is not None:
+        return client
+    else:
+        return load_client()
+
+
+def load_client():
+    global client
+    client = soundcloud.Client(client_id=client_id,
+                               client_secret=client_secret,
+                               username=username,
+                               password=password)
+    return client
 
 
 def getPlaylist():
-    playlists = client.get('me/playlists')
+    playlists = get_client().get('me/playlists')
     data = []
     for playlist in playlists:
         data.append(getPlaylistData(playlist))
@@ -33,11 +52,11 @@ def getPlaylistData(playlist):
 
 
 def deletePlaylist(playlistId):
-    response = client.delete('/playlists/' + str(playlistId))
+    response = get_client().delete('/playlists/' + str(playlistId))
     print(response)
 
 
 def testPlaylist():
-    activities = client.get('/me/activities')
+    activities = get_client().get('/me/activities')
     print(activities)
     return ''
