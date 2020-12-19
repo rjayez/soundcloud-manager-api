@@ -1,1 +1,1 @@
-web: python -m flask run
+worker: python -m flask run
