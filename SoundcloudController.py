@@ -6,9 +6,9 @@ from SoundcloudService import client
 app = Flask(__name__)
 
 
-# @app.route('/')
-# def index():
-#     return app.send_static_file('/client/src/index.js')
+@app.route('/')
+def index():
+    return "<h2>C'est mon api !</h2"
 
 
 #@app.route('/me')
