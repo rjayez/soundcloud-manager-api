@@ -1,10 +1,16 @@
 import soundcloud
 from Config import config
+import os
 
-client = soundcloud.Client(client_id=config.get('Soundcloud', 'clientid', fallback='Vide'),
-                           client_secret=config.get('Soundcloud', 'clientsecret', fallback='Vide'),
-                           username=config.get('Soundcloud', 'username', fallback='Vide'),
-                           password=config.get('Soundcloud', 'password', fallback='Vide'))
+client_id = os.environ['SOUNDCLOUD_CLIENT_ID']
+client_secret = os.environ['SOUNDCLOUD_CLIENT_SECRET']
+username = os.environ['SOUNDCLOUD_USERNAME']
+password = os.environ['SOUNDCLOUD_PASSWORD']
+
+client = soundcloud.Client(client_id=client_id,
+                           client_secret=client_secret,
+                           username=username,
+                           password=password)
 
 
 def getPlaylist():

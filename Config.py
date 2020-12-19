@@ -1,7 +1,7 @@
 import configparser
 
 config = configparser.ConfigParser()
-config.read("../properties.ini")
+config.read("properties.ini")
 
 print (config.get('Soundcloud', 'username', fallback=None))
 print (config.get('Soundcloud', 'password', fallback=None))
