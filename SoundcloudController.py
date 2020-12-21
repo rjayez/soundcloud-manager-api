@@ -4,16 +4,16 @@ import SoundcloudPlaylistCreator
 import SoundcloudService
 from SoundcloudService import client
 
-
 app = Flask(__name__)
-cors = CORS(app, resources={r"/playlists": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": ["http://localhost:1234", "https://soundcloud-manager.netlify.app"]}})
+
 
 @app.route('/')
 def index():
     return "<h2>C'est mon api !</h2"
 
 
-#@app.route('/me')
+# @app.route('/me')
 def me():
     values = client.get('/me')
     print(values)
@@ -23,9 +23,9 @@ def me():
 
 @app.route('/playlists')
 def getPlaylist():
-     playlistData = SoundcloudService.getPlaylist()
-     return jsonify(playlistData)
-    # return "truc"
+    playlistData = SoundcloudService.getPlaylist()
+    return jsonify(playlistData)
+
 
 @app.route('/playlists/weekly/<int:week_number>', methods=['POST'])
 def createWeeklyPlaylist(week_number):
@@ -33,7 +33,6 @@ def createWeeklyPlaylist(week_number):
     SoundcloudPlaylistCreator.createPlaylist(week_number)
     # TODO renvoyer une 204 si la playlist est vide
     return 'success'
-
 
 
 @app.route('/test')
