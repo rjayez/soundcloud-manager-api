@@ -1,10 +1,12 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify
+from flask_cors import CORS
 import SoundcloudPlaylistCreator
 import SoundcloudService
 from SoundcloudService import client
 
-app = Flask(__name__)
 
+app = Flask(__name__)
+cors = CORS(app, resources={r"/playlists": {"origins": "*"}})
 
 @app.route('/')
 def index():

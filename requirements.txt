@@ -3,3 +3,4 @@ gunicorn
 configparser
 git+git://github.com/rjayez/soundcloud-python.git@v0.5.1#egg=soundcloud
 python-dotenv
+flask-cors
