@@ -23,8 +23,8 @@ def me():
 
 @app.route('/playlists')
 def getPlaylist():
-    playlistData = SoundcloudService.getPlaylist()
-    return jsonify(playlistData)
+    playlist_data = SoundcloudService.getPlaylist()
+    return jsonify(playlist_data)
 
 
 @app.route('/playlists/weekly/<int:week_number>', methods=['POST'])

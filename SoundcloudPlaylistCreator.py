@@ -7,19 +7,19 @@ from SoundcloudService import client
 from requests import HTTPError
 
 
-def createPlaylist(numeroSemaine):
+def createPlaylist(numero_semaine):
     # Initialization part
     datetimeFormat = "%Y/%m/%d %H:%M:%S %z"
 
-    periodeDebut = Utils.getLundiAvecNumSemaine(date.today().year, numeroSemaine)
-    periodeFin = Utils.getDimancheAvecNumSemaine(date.today().year, numeroSemaine)
+    periodeDebut = Utils.getLundiAvecNumSemaine(date.today().year, numero_semaine)
+    periodeFin = Utils.getDimancheAvecNumSemaine(date.today().year, numero_semaine)
 
     listSetsId = []
     listTracksId = []
     dateTimeLastActivitie = datetime.now()
     millisecondsInMinute = 60000
 
-    print("Semaine n° %s" % numeroSemaine)
+    print("Semaine n° %s" % numero_semaine)
 
     # Initialisation activities
     # create an array of track ids
@@ -39,35 +39,33 @@ def createPlaylist(numeroSemaine):
                     print("Track : %s - %s" % (dateTimeLastActivitie, activitie.origin.title))
                     listTracksId.append({'id': activitie.origin.id})
 
-        #activities = client.get(activities.next_href)
+        # activities = client.get(activities.next_href)
         activities = retryOnInternalServerError(activities.next_href, 2)
 
     # create the playlist
-    postSetsPlaylist(listSetsId, numeroSemaine)
-    postTacksPlaylist(listTracksId, numeroSemaine)
+    postSetsPlaylist(listSetsId, numero_semaine)
+    postTacksPlaylist(listTracksId, numero_semaine)
+
 
 def postSetsPlaylist(listSetsId, numeroSemaine):
-    if len(listSetsId) > 0:
-        client.post('/playlists', playlist={
-            'title': 'Set de la semaine %s' % numeroSemaine,
-            'tracks': listSetsId,
-            'sharing': 'private'})
-    else:
-        print("La liste des sets est vide")
+    post_playlist(listSetsId, numeroSemaine, "Set semaine")
 
 
 def postTacksPlaylist(listTracksId, numeroSemaine):
+    post_playlist(listTracksId, numeroSemaine, "Track semaine")
 
-    if len(listTracksId) > 0:
+
+def post_playlist(list_id, numero_semaine, titre):
+    if len(list_id) > 0:
         client.post('/playlists', playlist={
-            'title': 'Track de la semaine %s' % numeroSemaine,
-            'tracks': listTracksId,
+            'title': '%s %s' % (titre, numero_semaine),
+            'tracks': list_id,
             'sharing': 'private'})
     else:
-        print("La liste des tracks est vide")
+        print("La liste \"%s\" est vide" % titre)
+
 
 def retryOnInternalServerError(nextHref, nbRetry):
-
     if nbRetry <= 0:
         raise Exception('CA PETE')
 
