@@ -3,7 +3,7 @@
 
 import Utils
 from datetime import *
-from SoundcloudService import client
+from SoundcloudService import get_activities, post_playlist, get_for_path
 from requests import HTTPError
 
 
@@ -23,7 +23,7 @@ def createPlaylist(numero_semaine):
 
     # Initialisation activities
     # create an array of track ids
-    activities = client.get('/me/activities', limit=1)
+    activities = get_activities(1)
 
     print(activities)
 
@@ -55,22 +55,12 @@ def postTacksPlaylist(listTracksId, numeroSemaine):
     post_playlist(listTracksId, numeroSemaine, "Track semaine")
 
 
-def post_playlist(list_id, numero_semaine, titre):
-    if len(list_id) > 0:
-        client.post('/playlists', playlist={
-            'title': '%s %s' % (titre, numero_semaine),
-            'tracks': list_id,
-            'sharing': 'private'})
-    else:
-        print("La liste \"%s\" est vide" % titre)
-
-
 def retryOnInternalServerError(nextHref, nbRetry):
     if nbRetry <= 0:
         raise Exception('CA PETE')
 
     try:
-        return client.get(nextHref)
+        return get_for_path(nextHref)
     except HTTPError as error:
         print("CA PETE")
         print(error)

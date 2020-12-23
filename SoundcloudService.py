@@ -10,12 +10,6 @@ password = os.environ['SOUNDCLOUD_PASSWORD']
 client = None
 
 
-# client = soundcloud.Client(client_id=client_id,
-#                            client_secret=client_secret,
-#                            username=username,
-#                            password=password)
-
-
 def get_client():
     if client is not None:
         return client
@@ -31,6 +25,9 @@ def load_client():
                                password=password)
     return client
 
+
+def get_for_path(path):
+    get_client().get(path)
 
 def getPlaylist():
     playlists = get_client().get('me/playlists')
@@ -54,6 +51,20 @@ def getPlaylistData(playlist):
 def deletePlaylist(playlistId):
     response = get_client().delete('/playlists/' + str(playlistId))
     print(response)
+
+
+def get_activities(limit):
+    return get_client().get('/me/activities', limit=limit)
+
+
+def post_playlist(list_id, numero_semaine, titre):
+    if len(list_id) > 0:
+        get_client().post('/playlists', playlist={
+            'title': '%s %s' % (titre, numero_semaine),
+            'tracks': list_id,
+            'sharing': 'private'})
+    else:
+        print("La liste \"%s\" est vide" % titre)
 
 
 def testPlaylist():
