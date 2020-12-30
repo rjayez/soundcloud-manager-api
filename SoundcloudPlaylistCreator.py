@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Utils
+import re
 from datetime import *
-from SoundcloudService import get_activities, post_playlist, get_for_path
+
 from requests import HTTPError
+
+import Utils
+from SoundcloudService import get_activities, post_playlist, get_activities_with_cursor
 
 
 def createPlaylist(numero_semaine):
@@ -27,6 +30,9 @@ def createPlaylist(numero_semaine):
 
     print(activities)
 
+    if activities is None:
+        raise Exception("L'objet des activities est vide :'(")
+
     while periodeDebut < dateTimeLastActivitie:
         for activitie in activities.collection:
             track = activitie.origin
@@ -43,8 +49,13 @@ def createPlaylist(numero_semaine):
         activities = retryOnInternalServerError(activities.next_href, 2)
 
     # create the playlist
-    postSetsPlaylist(listSetsId, numero_semaine)
     postTacksPlaylist(listTracksId, numero_semaine)
+    postSetsPlaylist(listSetsId, numero_semaine)
+
+    return {
+        "setsNumber": len(listSetsId),
+        "tracksNumber": len(listTracksId)
+    }
 
 
 def postSetsPlaylist(listSetsId, numeroSemaine):
@@ -59,9 +70,17 @@ def retryOnInternalServerError(nextHref, nbRetry):
     if nbRetry <= 0:
         raise Exception('CA PETE')
 
+    cursor = extract_cursor(nextHref)
+
     try:
-        return get_for_path(nextHref)
+        return get_activities_with_cursor(1, cursor)
     except HTTPError as error:
         print("CA PETE")
         print(error)
         retryOnInternalServerError(nextHref, nbRetry - 1)
+
+
+def extract_cursor(nextHref):
+    regex = re.compile(r'.+cursor=([\d\w-]+)')
+    cursor = regex.match(nextHref).group(1)
+    return cursor
