@@ -56,6 +56,7 @@ def deletePlaylist(playlistId):
 def get_activities(limit):
     return get_client().get('/me/activities', limit=limit)
 
+
 def get_activities_with_cursor(limit, cursor):
     return get_client().get('/me/activities', limit=limit, cursor=cursor)
 

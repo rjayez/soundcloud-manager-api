@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 from datetime import *
 
 from requests import HTTPError
@@ -10,12 +11,15 @@ import Utils
 from SoundcloudService import get_activities, post_playlist, get_activities_with_cursor
 
 
-def createPlaylist(numero_semaine):
+def createPlaylist(numero_semaine, annee=None):
     # Initialization part
     datetimeFormat = "%Y/%m/%d %H:%M:%S %z"
 
-    periodeDebut = Utils.getLundiAvecNumSemaine(date.today().year, numero_semaine)
-    periodeFin = Utils.getDimancheAvecNumSemaine(date.today().year, numero_semaine)
+    if annee is None:
+        annee = date.today().year
+
+    periodeDebut = Utils.getLundiAvecNumSemaine(annee, numero_semaine)
+    periodeFin = Utils.getDimancheAvecNumSemaine(annee, numero_semaine)
 
     listSetsId = []
     listTracksId = []
@@ -46,7 +50,7 @@ def createPlaylist(numero_semaine):
                     listTracksId.append({'id': activitie.origin.id})
 
         # activities = client.get(activities.next_href)
-        activities = retryOnInternalServerError(activities.next_href, 2)
+        activities = retryOnInternalServerError(activities.next_href, 3)
 
     # create the playlist
     postTacksPlaylist(listTracksId, numero_semaine)
@@ -77,6 +81,7 @@ def retryOnInternalServerError(nextHref, nbRetry):
     except HTTPError as error:
         print("CA PETE")
         print(error)
+        time.sleep(2)
         retryOnInternalServerError(nextHref, nbRetry - 1)
 
 

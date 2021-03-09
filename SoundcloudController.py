@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import SoundcloudPlaylistCreator
 import SoundcloudService
@@ -30,8 +30,8 @@ def getPlaylist():
 
 @app.route('/playlists/weekly/<int:week_number>', methods=['POST'])
 def createWeeklyPlaylist(week_number):
-    print(week_number)
-    return SoundcloudPlaylistCreator.createPlaylist(week_number)
+
+    return SoundcloudPlaylistCreator.createPlaylist(week_number, request.args.get("year"))
 
 
 @app.route('/test')
