@@ -3,7 +3,7 @@
 
 import re
 import time
-from datetime import *
+from datetime import datetime, date
 
 from requests import HTTPError
 
