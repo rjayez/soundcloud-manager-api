@@ -7,6 +7,8 @@ from datetime import datetime, date
 
 from requests import HTTPError
 
+from pprint import pprint
+
 import Utils
 from SoundcloudService import get_activities, post_playlist, get_activities_with_cursor
 
@@ -72,20 +74,25 @@ def postTacksPlaylist(listTracksId, numeroSemaine):
 
 def retryOnInternalServerError(nextHref, nbRetry):
     if nbRetry <= 0:
-        raise Exception('CA PETE')
+        raise Exception('CA PETE VRAIMENT')
+    print(nextHref)
 
     cursor = extract_cursor(nextHref)
+    if cursor is None :
+        raise Exception("Cursor vide. Fin du fil d'activité.")
 
     try:
         return get_activities_with_cursor(1, cursor)
     except HTTPError as error:
-        print("CA PETE")
         print(error)
         time.sleep(2)
-        retryOnInternalServerError(nextHref, nbRetry - 1)
+        return retryOnInternalServerError(nextHref, nbRetry - 1)
 
 
 def extract_cursor(nextHref):
     regex = re.compile(r'.+cursor=([\d\w-]+)')
-    cursor = regex.match(nextHref).group(1)
-    return cursor
+    match = regex.match(nextHref)
+    if match is not None:
+        return match.group(1)
+    else:
+        return None
