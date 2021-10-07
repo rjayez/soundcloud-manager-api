@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import SoundcloudPlaylistCreator
 import SoundcloudService
-from SoundcloudService import client
+# from SoundcloudService import client
 
 app = Flask(__name__)
 cors = CORS(app, resources={
@@ -14,9 +14,11 @@ def index():
     return "<h2>C'est mon api !</h2"
 
 
-# @app.route('/me')
+@app.route('/me')
 def me():
-    values = client.get('/me')
+    code = request.args.get("code")
+    client = SoundcloudService.connnection(code)
+    values = client.get("/me")
     print(values)
     return jsonify(values)
     # return Flask.make_response("Success",)
@@ -37,7 +39,7 @@ def createWeeklyPlaylist(week_number):
 @app.route('/test')
 def test():
     # return SoundcloudService.testPlaylist()
-    return ""
+    return "Coucou"
 
 
 if __name__ == '__main__':
