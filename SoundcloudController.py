@@ -1,12 +1,16 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import SoundcloudPlaylistCreator
 import SoundcloudService
+
 # from SoundcloudService import client
 
 app = Flask(__name__)
 cors = CORS(app, resources={
-    r"/playlists/*": {"origins": ["http://localhost:1234", "https://soundcloud-manager.netlify.app"]}})
+    r"/playlists/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]},
+    r"/authentication/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]},
+    r"/authorization/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]}
+})
 
 
 @app.route('/')
@@ -17,11 +21,27 @@ def index():
 @app.route('/me')
 def me():
     code = request.args.get("code")
-    client = SoundcloudService.connnection(code)
-    values = client.get("/me")
-    print(values)
-    return jsonify(values)
+    SoundcloudService.connnection(code)
+    values = SoundcloudService.get_client().get("/me")
+    print(values.obj)
+    return jsonify(values.obj)
     # return Flask.make_response("Success",)
+
+
+@app.route('/authorization')
+def authorization():
+    return SoundcloudService.get_client().authorize_url()
+
+
+@app.route('/authentication')
+def authentication():
+    code = request.args.get("code")
+    if code is None:
+        abort(400, "code request parameters is required")
+        # raise Exception("code request parameters is required")
+
+    SoundcloudService.connnection(code)
+    return "Success authentication"
 
 
 @app.route('/playlists')
@@ -32,7 +52,6 @@ def getPlaylist():
 
 @app.route('/playlists/weekly/<int:week_number>', methods=['POST'])
 def createWeeklyPlaylist(week_number):
-
     return SoundcloudPlaylistCreator.createPlaylist(week_number, request.args.get("year"))
 
 

@@ -8,7 +8,7 @@ username = os.environ['SOUNDCLOUD_USERNAME']
 password = os.environ['SOUNDCLOUD_PASSWORD']
 
 client = None
-
+code = None
 
 def get_client():
     if client is not None:
@@ -27,28 +27,14 @@ def load_client():
 
     return client
 
-    # client = soundcloud.Client(client_id=client_id,
-    #                            grant_type="authorization_code",
-    #                            redirect_uri="https://soundcloud-manager.netlify.app",
-    #                            code=code)
 
 def connnection(code):
     global client
     # client = soundcloud.Client()
-    # client.exchange_token(code)
     client = soundcloud.Client(client_id=client_id,
                                client_secret=client_secret,
                                redirect_uri="https://soundcloud-manager.netlify.app")
-
-    print(client.authorize_url())
-
-    access_token, expires, scope, refresh_token = client.exchange_token(code)
-    print(access_token)
-    print(expires)
-    print(scope)
-    print(refresh_token)
-
-    return access_token
+    client.exchange_token(code)
 
 
 def get_for_path(path):
