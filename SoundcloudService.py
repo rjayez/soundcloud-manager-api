@@ -1,6 +1,5 @@
-import soundcloud
-from Config import config
 import os
+import soundcloud
 
 client_id = os.environ['SOUNDCLOUD_CLIENT_ID']
 client_secret = os.environ['SOUNDCLOUD_CLIENT_SECRET']

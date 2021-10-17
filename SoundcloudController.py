@@ -9,7 +9,8 @@ app = Flask(__name__)
 cors = CORS(app, resources={
     r"/playlists/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]},
     r"/authentication/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]},
-    r"/authorization/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]}
+    r"/authorization/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]},
+    r"/check-authent/*": {"origins": ["http://localhost:3214", "https://soundcloud-manager.netlify.app"]},
 })
 
 
@@ -26,6 +27,15 @@ def me():
     print(values.obj)
     return jsonify(values.obj)
     # return Flask.make_response("Success",)
+
+
+@app.route('/check-authent')
+def check_authentifcation():
+    try:
+        SoundcloudService.get_client().get("/me")
+        return {"isAuthenticated": True}
+    except Exception as ex:
+        return {"isAuthenticated": False}
 
 
 @app.route('/authorization')
