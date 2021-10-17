@@ -4,9 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-soundcloud = {path = "./../soundcloud-python"}
+soundcloud = {ref = "v0.6.0", git = "git://github.com/rjayez/soundcloud-python.git"}
+gunicorn = "===20.0.4"
+configparser = "===5.0.0"
+python-dotenv = "===0.14.0"
+Flask = "===1.1.2"
+Flask-Cors = "===3.0.9"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
+pi
