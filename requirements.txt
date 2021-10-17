@@ -1,6 +1,6 @@
 flask
 gunicorn
 configparser
-git+git://github.com/rjayez/soundcloud-python.git@v0.5.1#egg=soundcloud
+git+git://github.com/rjayez/soundcloud-python.git@v0.6.0#egg=soundcloud
 python-dotenv
 flask-cors
